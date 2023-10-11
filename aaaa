@@ -493,7 +493,7 @@ public:
 
     void addFront(int val) {
         if (size >= MAX_SIZE) {
-            cout << "Deque is full. Cannot pushFront." << endl;
+            cout << "overflow" << endl;
             return;
         }
         front = (front - 1 + MAX_SIZE) % MAX_SIZE;
@@ -503,7 +503,7 @@ public:
 
     void addBack(int val) {
         if (size >= MAX_SIZE) {
-           cout << "Deque is full. Cannot pushBack." << endl;
+           cout << "overflow" << endl;
             return;
         }
         rear = (rear + 1) % MAX_SIZE;
@@ -513,7 +513,7 @@ public:
 
     int popFront() {
         if (isEmpty()) {
-            cout << "Deque is empty. Cannot popFront." << endl;
+            cout << "underflow" << endl;
             return -1;
         }
         int val = arr[front];
@@ -524,7 +524,7 @@ public:
 
     int popBack() {
         if (isEmpty()) {
-            cout << "Deque is empty. Cannot popBack." << endl;
+            cout << "underflow" << endl;
             return -1;
         }
         int val = arr[rear];
@@ -539,6 +539,22 @@ public:
 
     int getSize() {
         return size;
+    }
+    void display(){
+        if(front<=rear){
+            for(int i=front;i<=rear;i++){
+                cout<<arr[i]<<" ";
+            }
+        }
+        else{
+            
+            for(int i=front;i<MAX_SIZE;i++){
+                cout<<arr[i]<<" ";
+            }
+            for(int i=0;i<=rear;i++){
+                cout<<arr[i]<<" ";
+            }
+        }
     }
 
 private:
@@ -555,19 +571,18 @@ int main() {
     Q.addBack(2);
     Q.addFront(3);
     Q.addFront(4);
+    Q.display();
+    cout<<endl;
+    Q.popFront();
+    Q.display();
+    cout<<endl;
+    Q.popBack();
+    Q.display();
 
-    cout << "Deque size: " << Q.getSize() << endl;
-
-    while (!Q.isEmpty()) {
-        cout << Q.popFront() << " ";
-    }
-
-    cout << endl;
+    
 
     return 0;
 }
-
-
 
 #include <bits/stdc++.h>
 
@@ -622,7 +637,7 @@ public:
 
     int popFront() {
         if (isEmpty()) {
-            cout << "Deque is empty. Cannot popFront." << endl;
+            cout << "Empty" << endl;
             return -1;
         }
 
@@ -644,7 +659,7 @@ public:
 
     int popBack() {
         if (isEmpty()) {
-            cout << "Deque is empty. Cannot popBack." << endl;
+            cout << "Empty" << endl;
             return -1;
         }
 
@@ -671,6 +686,14 @@ public:
     int getSize() {
         return size;
     }
+    void display(){
+        Node*temp=front;
+        while(temp!=NULL){
+            cout<<temp->data<<" ";
+            temp=temp->next;
+        }
+    
+    }
 
 private:
     Node* front;
@@ -684,17 +707,18 @@ int main() {
     deque.pushBack(1);
     deque.pushBack(2);
     deque.pushFront(3);
-    deque.pushFront(4);
+    deque.pushBack(4);
+   deque.display();
+   cout<<endl;
 
-    cout << "Deque size: " << deque.getSize() << endl;
-
-    while (!deque.isEmpty()) {
-        cout << deque.popFront() << " ";
-    }
+   
     deque.popFront();
+    deque.display();
+    cout<<endl;
+   deque.popBack();
+    deque.display();
 
     cout << endl;
 
     return 0;
 }
-
