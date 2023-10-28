@@ -1,0 +1,775 @@
+Assignment 5.1
+Q1.
+a. Linked List
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define pb push_back
+
+struct node{
+    int data;
+    struct node* left;
+    struct node* right;
+    
+    node(int val){
+        data=val;
+        left=NULL;
+        right=NULL;
+    }
+    
+};
+
+
+int count_leaves(struct node*root){
+    if(root==NULL) return 0;
+    return count_leaves(root->left) + count_leaves(root->right) + 1;
+}
+
+int depth(struct node*root){
+	if(root==NULL) return 0;
+	int l=depth(root->right);
+	int r=depth(root->left);
+	return max(r,l)+1;
+}
+
+
+bool is_father(struct node*a,struct node*b){
+	if((a->left==b)||(a->right==b)) return true;
+	return false;
+}
+
+bool CheckIfNodesAreSiblings(node* root,struct node*a,struct node*b)
+{
+    if (!root)return false;
+ 
+    if (root->left && root->right) {
+        int left = root->left->data;
+        int right = root->right->data;
+ 
+        if (left == a->data && right == b->data)
+            return true;
+        else if (left == b->data && right == a->data)
+            return true;
+    }
+ 
+    if (root->left)
+        if (CheckIfNodesAreSiblings(root->left, a,b))
+            return true;
+ 
+   
+    if (root->right)
+        if (CheckIfNodesAreSiblings(root->right, a,b))
+            return true;
+    return false;
+}
+int main()
+{
+    struct node* root=new node(1);
+    root->right=new node(3);
+    root->left=new node(2);
+    root->left->left=new node(4);
+    root->left->right=new node(5);
+    root->right->left=new node(6);
+    root->right->right=new node(7);
+    cout<<count_leaves(root)<<endl;
+    cout<<depth(root)<<" ";
+    cout<<is_father(root,root->left)<<" ";
+    cout<<CheckIfNodesAreSiblings(root,root->left,root->right)<<" ";
+}
+ 
+b. Array 
+#include<bits/stdc++.h>
+using namespace std;
+int tree[10];
+int root(int key) {
+    if (tree[0] != '\0') cout << "Tree already had root";
+    else tree[0] = key;
+    return 0;
+}
+
+int x=0;
+int y=0;
+
+int set_left(int key, int parent) {
+    if (tree[parent] == '\0') cout << "no parent found";
+    else tree[(parent * 2) + 1] = key,y++;
+    return 0;
+}
+
+
+
+int set_right(int key, int parent) {
+    if (tree[parent] == '\0') cout << "no parent found";
+    else tree[(parent * 2) + 2] = key,x++;
+    return 0;
+}
+
+int count(){
+    int c=0;
+    for(auto i:tree){
+        if(i!=0) c++;
+    }
+    return c;
+}
+
+int depth(){
+    int ind=0;
+    for(int i=0;i<10;i++){
+        if(tree[i]!=0) ind=i;
+    }
+    return log2(ind+1)+1;
+}
+
+bool is_father(int a,int b){
+    if((b==(a*2+1))||(b==(a*2))) return true;
+    return false;
+}
+bool is_sibling(int a,int b){
+    return log2(a+1)==log2(b+1);
+}
+
+
+int main() {
+    root(8);
+    set_left(6,0);
+    set_right(4, 0);
+    set_left(3, 1);
+    set_right(4, 1);
+    set_right(7, 2);
+    cout<<count()<<endl;
+    cout<<depth()<<endl;
+    cout<<is_father(1,2)<<endl;
+    cout<<is_sibling(1,2);
+    return 0;
+}
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Q2.
+#include <bits/stdc++.h>
+using namespace std;
+#define pb push_back
+#define ll long long
+
+struct node{
+    int data;
+    node *left;
+    node * right;
+    
+    node(int val){
+        data=val;
+        left=NULL;
+        right=NULL;
+    }
+};
+
+node* insertbst(node* root,int val){
+    node* temp= new node(val);
+    if(root==NULL) return temp;
+    
+    if(val<root->data){
+        root->left=insertbst(root->left,val);
+    }
+    else root->right=insertbst(root->right,val);
+    return root;
+}
+
+void inorder(node* root){
+    if(root==NULL) return;
+    
+    inorder(root->left);
+    cout<<root->data<<" ";
+    inorder(root->right);
+}
+
+void preorder(node* root){
+    if(root==NULL) return;
+    cout<<root->data<<" ";
+    preorder(root->left);
+    preorder(root->right);
+}
+
+node* search(node* root,int val){
+    if(root==NULL) return NULL;
+    if(root->data==val) return root;
+    if(root->data>val) search(root->left,val);
+    else search(root->right,val);
+}
+
+node* successor(node* root){
+    node* curr=root;
+    while(curr!=NULL and curr->left!=NULL) curr=curr->left;
+    return curr;
+}
+
+node* delnode(node* root,int val){
+    if(val<root->data){
+        root->left=delnode(root->left,val);
+    }
+    else if(val>root->data){
+        root->right=delnode(root->right,val);
+    }
+    else{
+        if(root->left==NULL){
+            node* temp=root->right;
+            free(root);
+            return temp;
+        }
+        else if(root->right==NULL){
+            node* temp=root->left;
+            free(root);
+            return temp;
+        }
+        
+        node* temp=successor(root->right);
+        root->data=temp->data;
+        root->right=delnode(root->right,temp->data);
+    }
+    return root;
+}
+
+int main()
+{
+    node* root=NULL;
+    root=insertbst(root,5);
+    insertbst(root,1);
+    insertbst(root,3);
+    insertbst(root,4);
+    insertbst(root,2);
+    insertbst(root,7);
+    inorder(root);
+    cout<<endl;
+    delnode(root,2);
+    inorder(root);
+    cout<<endl;
+}
+ 
+
+
+
+
+
+
+
+
+ 
+Assignment 5.2
+1.
+#include <bits/stdc++.h>
+
+using namespace std;
+
+class Node {
+public:
+    int value;
+    Node* left;
+    Node* right;
+
+    Node(int val) : value(val), left(nullptr), right(nullptr) {}
+};
+
+class LLNode {
+public:
+    int value;
+    LLNode* next;
+
+    LLNode(int val) : value(val), next(nullptr) {}
+};
+
+LLNode* binaryTreeToLinkedList(Node* root) {
+    if (root == nullptr) {
+        return nullptr;
+    }
+
+    stack<Node*> nodes;
+    Node* current = root;
+    LLNode* head = nullptr;
+    LLNode* prev = nullptr;
+    int k = 1;
+
+    while (!nodes.empty() || current) {
+        while (current) {
+            nodes.push(current);
+            current = current->left;
+        }
+
+        current = nodes.top();
+        nodes.pop();
+
+        if (k == 1) {
+            head = new LLNode(current->value);
+            prev = head;
+        } 
+        else {
+            LLNode* newNode = new LLNode(current->value);
+            prev->next = newNode;
+            prev = newNode;
+        }
+
+        k++;  
+
+        current = current->right;
+    }
+
+    return head;
+}
+
+int findKthNodeInLinkedList(Node* root, int k) {
+    LLNode* linkedListHead = binaryTreeToLinkedList(root);
+
+    LLNode* current = linkedListHead;
+    int count = 1;
+
+    while (current) {
+        if (count == k) {
+            return current->value;
+        }
+        current = current->next;
+        count++;
+    }
+
+    return -1; 
+}
+
+LLNode* deleteKthNode(LLNode* head, int k) {
+    if (k == 1) {
+        LLNode* temp = head;
+        head = head->next;
+        delete temp;
+        return head;
+    }
+
+    LLNode* current = head;
+    LLNode* prev = nullptr;
+    int count = 1;
+
+    while (current && count < k) {
+        prev = current;
+        current = current->next;
+        count++;
+    }
+
+    if (current) {
+        prev->next = current->next;
+        delete current;
+    }
+
+    return head;
+}
+
+int main() {
+
+    Node* root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->right = new Node(5);
+    root->right->left = new Node(6);
+
+    int k = 3;
+    int kthNodeValue = findKthNodeInLinkedList(root, k);
+
+    if (kthNodeValue != -1) {
+        cout << "The " << k << "th node in the linked list is: " << kthNodeValue << endl;
+    } 
+    else {
+        cout << "The linked list does not have a " << k << "th node." << endl;
+    }
+    
+    if (kthNodeValue != -1) {
+        LLNode* linkedListHead = binaryTreeToLinkedList(root);
+        linkedListHead = deleteKthNode(linkedListHead, k);
+
+        cout << "After deletion, the linked list is: "<<endl;
+        LLNode* current = linkedListHead;
+        while (current) {
+            cout << current->value << " ";
+            current = current->next;
+        }
+        cout << endl;
+    } 
+    else {
+        cout << "The linked list does not have a " << k << "th node." << endl;
+    }
+
+    return 0;
+}
+ 
+
+ 
+2.
+#include <bits/stdc++.h>
+using namespace std;
+
+class Node {
+public:
+    int value;
+    Node* left;
+    Node* right;
+
+    Node(int val) : value(val), left(nullptr), right(nullptr) {}
+};
+
+class LLNode {
+public:
+    int value;
+    LLNode* next;
+
+    LLNode(int val) : value(val), next(nullptr) {}
+};
+
+LLNode* binaryTreeToLinkedList(Node* root) {
+    if (root == nullptr) {
+        return nullptr;
+    }
+
+    stack<Node*> nodes;
+    Node* current = root;
+    LLNode* head = nullptr;
+    LLNode* prev = nullptr;
+    int k = 1;
+
+    while (!nodes.empty() || current) {
+        while (current) {
+            nodes.push(current);
+            current = current->left;
+        }
+
+        current = nodes.top();
+        nodes.pop();
+
+        if (k == 1) {
+            head = new LLNode(current->value);
+            prev = head;
+        } 
+        else {
+            LLNode* newNode = new LLNode(current->value);
+            prev->next = newNode;
+            prev = newNode;
+        }
+
+        k++;  
+
+        current = current->right;
+    }
+
+    return head;
+}
+
+int findKthNodeInLinkedList(Node* root, int k) {
+    LLNode* linkedListHead = binaryTreeToLinkedList(root);
+
+    LLNode* current = linkedListHead;
+    int count = 1;
+
+    while (current) {
+        if (count == k) {
+            return current->value;
+        }
+        current = current->next;
+        count++;
+    }
+
+    return -1; 
+}
+
+LLNode* deleteKthNode(LLNode* head, int k) {
+    if (k == 1) {
+        LLNode* temp = head;
+        head = head->next;
+        delete temp;
+        return head;
+    }
+
+    LLNode* current = head;
+    LLNode* prev = nullptr;
+    int count = 1;
+
+    while (current && count < k) {
+        prev = current;
+        current = current->next;
+        count++;
+    }
+
+    if (current) {
+        prev->next = current->next;
+        delete current;
+    }
+
+    return head;
+}
+
+int josephus(int n, int m) {
+    LLNode* head = new LLNode(1);
+    LLNode* current = head;
+
+    for (int i = 2; i <= n; i++) {
+        current->next = new LLNode(i);
+        current = current->next;
+    }
+    current->next = head; // Make it circular
+
+    current = head;
+    LLNode* prev = nullptr;
+
+    while (n > 1) {
+        int count = 1;
+        while (count < m) {
+            prev = current;
+            current = current->next;
+            count++;
+        }
+
+        prev->next = current->next;
+        LLNode* temp = current;
+        current = current->next;
+        delete temp;
+
+        n--;
+    }
+
+    return current->value;
+}
+
+int main() {
+    int n = 7;
+    int m = 3; 
+    int x = josephus(n, m);
+    cout << "The last survivor's position is: " << x << endl;
+    return 0;
+}
+ 
+ 
+3.
+#include <bits/stdc++.h>
+using namespace std;
+
+void heapify(vector<int> &a, int n, int i)
+{
+	int largest = i;
+	int l = 2 * i + 1;
+	int r = 2 * i + 2;
+
+	if (l < n && a[l] > a[largest]) largest = l;
+
+	if (r < n && a[r] > a[largest]) largest = r;
+	
+	if (largest != i) {
+		swap(a[i], a[largest]);
+		heapify(a, n, largest);
+	}
+}
+
+void buildHeap(vector<int>& a, int n)
+{
+	int startIdx = (n / 2) - 1;
+	for (int i = startIdx; i >= 0; i--) {
+		heapify(a, n, i);
+	}
+}
+
+void printHeap(vector<int> &a, int n)
+{
+	for (int i = 0; i < n; i++)
+		cout << a[i] << " ";
+}
+
+int main()
+{
+	vector<int> a = {1, 3, 5, 4, 6, 13, 10, 9, 8, 15, 17};
+	int n = a.size();
+	buildHeap(a,n);
+	printHeap(a,n);
+	return 0;
+}
+ 
+
+ 
+4.
+#include <bits/stdc++.h>
+using namespace std;
+
+void heapify(vector<int> &a, int n, int i)
+{
+	int largest = i;
+	int l = 2 * i + 1;
+	int r = 2 * i + 2;
+
+	if (l < n && a[l] < a[largest]) largest = l;
+
+	if (r < n && a[r] < a[largest]) largest = r;
+	
+	if (largest != i) {
+		swap(a[i], a[largest]);
+		heapify(a, n, largest);
+	}
+}
+
+void buildHeap(vector<int>& a, int n)
+{
+	int startIdx = (n / 2) - 1;
+	for (int i = startIdx; i >= 0; i--) {
+		heapify(a, n, i);
+	}
+}
+
+void printHeap(vector<int> &a, int n)
+{
+	for (int i = 0; i < n; i++)
+		cout << a[i] << " ";
+}
+
+int main()
+{
+	vector<int> a = {1, 3, 5, 4, 6, 13, 10, 9, 8, 15, 17};
+	int n = a.size();
+	buildHeap(a,n);
+	printHeap(a,n);
+	return 0;
+}
+ 
+
+
+
+
+
+
+
+5.
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void heapifyDown(vector<int>& heap, int index) {
+    int n = heap.size();
+    int largest = index;
+    int leftChild = 2 * index + 1;
+    int rightChild = 2 * index + 2;
+
+    if (leftChild < n && heap[leftChild] > heap[largest]) {
+        largest = leftChild;
+    }
+
+    if (rightChild < n && heap[rightChild] > heap[largest]) {
+        largest = rightChild;
+    }
+
+    if (largest != index) {
+        swap(heap[index], heap[largest]);
+        heapifyDown(heap, largest);
+    }
+}
+
+void deleteRoot(vector<int>& heap) {
+    if (heap.empty()) {
+        cout << "Heap is empty. Cannot delete root." << endl;
+        return;
+    }
+
+    int n = heap.size();
+    heap[0] = heap[n - 1];
+    heap.pop_back();
+    heapifyDown(heap, 0);
+}
+
+int main() {
+    vector<int> maxHeap;
+
+    maxHeap.push_back(10);
+    maxHeap.push_back(8);
+    maxHeap.push_back(5);
+    maxHeap.push_back(7);
+    maxHeap.push_back(9);
+
+    cout << "Before deleting root: ";
+    for (int val : maxHeap) {
+        cout << val << " ";
+    }
+    cout << endl;
+
+    deleteRoot(maxHeap);
+
+    cout << "After deleting root: ";
+    for (int val : maxHeap) {
+        cout << val << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+ 
+ 
+Q6.
+#include <bits/stdc++.h>  
+using namespace std;  
+
+void heapify(vector<int> &a, int n, int i)  
+{  
+    int largest = i;
+    int left = 2 * i + 1; 
+    int right = 2 * i + 2; 
+    if (left < n && a[left] > a[largest])  largest = left;  
+     
+    if (right < n && a[right] > a[largest])  largest = right;  
+    if (largest != i) {  
+        int temp = a[i];  
+        a[i] = a[largest];  
+        a[largest] = temp;  
+          
+        heapify(a, n, largest);  
+    }  
+}  
+ void heapSort(vector<int> &a, int n)  
+{  
+  
+    for (int i = n / 2 - 1; i >= 0; i--)  heapify(a, n, i);  
+     
+    for (int i = n - 1; i >= 0; i--) {  
+        int temp = a[0];  
+        a[0] = a[i];  
+        a[i] = temp;  
+        heapify(a, i, 0);  
+    }  
+}  
+
+void print(vector<int>& a, int n)  
+{  
+    for (int i = 0; i < n; ++i)  cout<<a[i]<<" ";  
+}
+
+int main()  
+{  
+    vector<int> a = {2,5,40,10,20,13};  
+    int n = a.size();  
+    cout<<"Before sorting:"; 
+    print(a, n);  
+    heapSort(a, n); 
+    cout<<endl;
+    cout<<"After sorting:";    
+    print(a, n);  
+    return 0;  
+}
+ 
+
+
+
+
+
+
+
+
+
+
